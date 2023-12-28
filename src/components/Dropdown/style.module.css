@@ -1,0 +1,29 @@
+.select-container {
+    display: inline-block;
+    position: relative;
+}
+
+.select-arrow {
+    position: absolute;
+    top: 20%;
+    right: 8px;
+    pointer-events: none;
+}
+
+.dropdown-select {
+    padding: 8px 30px 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    font-size: 16px;
+    color: #333;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    width: 200px;
+}
+
+.dropdown-option {
+    background-color: #fff;
+    color: #333;
+}

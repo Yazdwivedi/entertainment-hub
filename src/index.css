@@ -1,10 +1,37 @@
 body {
   margin: 0;
+  background-color: rgb(248, 236, 226);
+  font-family: Inter;
+  font-style: normal;
+  z-index: 1;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.submit-button {
+  color: white;
+  background-color: rgb(44, 102, 86);
+  padding: 12px 30px;
+  border: 0px;
+  margin-top: 10px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.err-msg{
+  font-family: Arial, Helvetica, sans-serif;
+  color: red;
+  font-weight: 200;
+  font-size: small;
+  margin-left: 5px;
+}
+
+.disable-button{
+  opacity: 0.5;
+  cursor:not-allowed;
 }
 
 code {
