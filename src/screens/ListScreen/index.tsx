@@ -6,6 +6,13 @@ import { useForm } from "react-hook-form";
 import FormInput from "../../components/FormComponents/FormInput";
 import FormDropdown from "../../components/FormComponents/FormDropdown";
 
+enum Filters {
+  All = "all",
+  Plan_to_watch = "Plan to Watch",
+  Completed = "Completed",
+  Dropped = "Dropped",
+}
+
 type MenuItem = {
   name: string;
   type: string;
@@ -19,6 +26,17 @@ type MovieInputs = {
 
 type Menu = Array<MenuItem>;
 
+type ListItem = {
+  id: string;
+  imageUrl: string;
+  title: string;
+  description: string;
+  status: string;
+  rating: string;
+};
+
+type ListItems = Array<ListItem>;
+
 const ListScreen = (): JSX.Element => {
   const {
     register,
@@ -27,56 +45,86 @@ const ListScreen = (): JSX.Element => {
     formState: { errors, isValid },
   } = useForm<MovieInputs>({ mode: "onTouched" });
 
-  const [selectedType, setSelectedtype] = useState("all");
-  const [openModal, setOpenModal] = useState(false);
-
-  const items = [
+  const itemsArr: ListItems = [
     {
+      id: "1",
       imageUrl: require("../../assets/movie.jpg"),
       title: "First title",
       description: "First desc",
+      status: Filters.Plan_to_watch,
+      rating: "Unrated",
     },
     {
+      id: "2",
       imageUrl: require("../../assets/movie.jpg"),
       title: "First title",
       description: "First desc",
+      status: Filters.Plan_to_watch,
+      rating: "Unrated",
     },
     {
+      id: "3",
       imageUrl: require("../../assets/movie.jpg"),
       title: "First title",
       description: "First desc",
+      status: Filters.Plan_to_watch,
+      rating: "Unrated",
     },
     {
+      id: "4",
       imageUrl: require("../../assets/movie.jpg"),
       title: "First title",
       description:
         "First desc and i want to add more info at once,malskaoskoskasaysgaysgyasgyagsyagsyagsygaysgaysgaysgaysajsaushaiushiuashuahsuahsuashuasguasguasguasguasguasausausgausdsudgusgdusdgusdgusgdusgdusgdusdgusdgusdgusdgdgsudgzxjhzujxzuxsdsdsdiuhsudhsudhsudhsudshdishdushdusdsdusu",
+      status: Filters.Plan_to_watch,
+      rating: "Unrated",
     },
   ];
+
+  const [selectedType, setSelectedtype] = useState("all");
+  const [openModal, setOpenModal] = useState(false);
+  const [items, setItems] = useState(itemsArr);
 
   const menuItems: Menu = [
     {
       name: "All",
-      type: "all",
+      type: Filters.All,
     },
     {
       name: "Plan to watch",
-      type: "plan_to_watch",
+      type: Filters.Plan_to_watch,
     },
     {
       name: "Completed",
-      type: "completed",
+      type: Filters.Completed,
     },
     {
       name: "Dropped",
-      type: "dropped",
+      type: Filters.Dropped,
     },
   ];
 
-  const options = ["Plan to Watch", "Completed", "Dropped"];
+  const options = [Filters.Plan_to_watch,  Filters.Completed, Filters.Dropped];
 
-  const handleOptionSelect = (selectedOption: string) => {
-    console.log("Selected Option:", selectedOption);
+  const handleOptionSelect = (
+    idToUpdate: string,
+    selectedOption: string,
+    keyToUpdate: "status" | "rating"
+  ) => {
+    setItems((prevItems) =>
+      prevItems.map((currentItem) => {
+        if (currentItem.id === idToUpdate) {
+          currentItem[keyToUpdate] = selectedOption;
+        }
+        return currentItem;
+      })
+    );
+  };
+
+  const handleItemDelete = (idToDelete: string) => {
+    setItems((prevItems) =>
+      prevItems.filter((currentItem) => currentItem.id !== idToDelete)
+    );
   };
 
   const renderMenu = (): JSX.Element => {
@@ -92,7 +140,7 @@ const ListScreen = (): JSX.Element => {
               : borderStyle;
           borderStyle =
             menuItems.length === 1 ? { borderRadius: "30px" } : borderStyle;
-          console.log(borderStyle);
+
           return (
             <div
               onClick={() => setSelectedtype(item.type)}
@@ -122,9 +170,11 @@ const ListScreen = (): JSX.Element => {
           marginTop: "20px",
         }}
       >
-        {items.map((item) => {
+        {items
+        .filter((item=> selectedType === Filters.All || selectedType === item.status))
+        .map((item) => {
           return (
-            <div className={styles["list-item"]}>
+            <div className={styles["list-item"]} key={item.id}>
               <img src={item.imageUrl} alt="Movie Icon" />
               <div className={styles["list-item-info"]}>
                 <span style={{ fontWeight: "400" }}>{item.title}</span>
@@ -132,17 +182,27 @@ const ListScreen = (): JSX.Element => {
                   <span>Status</span>
                   <Dropdown
                     options={options}
-                    onSelectOption={handleOptionSelect}
+                    onSelectOption={(newSelectValue: string) =>
+                      handleOptionSelect(item.id, newSelectValue, "status")
+                    }
+                    defaultSelected={item.status}
                   />
                 </div>
                 <div className={styles["dropdown-container"]}>
                   <span>Rating</span>
                   <Dropdown
-                    options={options}
-                    onSelectOption={handleOptionSelect}
+                    options={["0", "1", "2", "3", "4", "5"]}
+                    onSelectOption={(newSelectValue: string) =>
+                      handleOptionSelect(item.id, newSelectValue, "rating")
+                    }
+                    defaultSelected={item.rating}
                   />
                 </div>
-                <img src={require("../../assets/delete.png")} alt="Delete" />
+                <img
+                  src={require("../../assets/delete.png")}
+                  alt="Delete"
+                  onClick={() => handleItemDelete(item.id)}
+                />
               </div>
             </div>
           );
@@ -223,7 +283,6 @@ const ListScreen = (): JSX.Element => {
       {openModal && (
         <Modal
           closeModal={() => {
-            console.log("umm");
             setOpenModal(false);
           }}
           render={renderMovieForm}

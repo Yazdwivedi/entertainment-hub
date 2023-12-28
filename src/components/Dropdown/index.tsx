@@ -1,18 +1,22 @@
-import { useState } from 'react';
 import styles from "./style.module.css";
 
-const Dropdown = ({ options, onSelectOption } : any) => {
-    const [selectedOption, setSelectedOption] = useState(options[0]);
+type DropdownProps = {
+    options: Array<string>,
+    onSelectOption: (val: string) => void,
+    defaultSelected?: string
+}
+
+const Dropdown = ({ options, onSelectOption, defaultSelected } : DropdownProps) => {
 
     const handleOptionChange = (event: any) => {
         const selectedValue = event?.target?.value;
-        setSelectedOption(selectedValue);
         onSelectOption(selectedValue);
     };
 
     return (
         <div className={styles["select-container"]}>
-            <select className={styles["dropdown-select"]} value={selectedOption} onChange={handleOptionChange}>
+            <select className={styles["dropdown-select"]} onChange={handleOptionChange}>
+            <option value="" selected disabled hidden>{defaultSelected || options[0]}</option> 
                 {options.map((option: any) => (
                     <option className={styles["dropdown-option"]} key={option} value={option}>
                         {option}
