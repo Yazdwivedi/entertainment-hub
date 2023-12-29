@@ -5,6 +5,7 @@ import { useLocation } from 'react-router-dom';
 
 
 type NavBarItem = {
+    id: string,
     name: string,
     redirectUrl: string,
     type: string,
@@ -26,8 +27,6 @@ const NavBar = ({ onSignInClick }: PropType) => {
 
     const handleClick = (event: MouseEvent) => {
         event.stopPropagation();
-        console.log("Clicked", typeof navbarRef.current);
-
         if (event.target instanceof Node && navbarRef?.current?.contains(event.target)) {
             return;
         }
@@ -45,16 +44,19 @@ const NavBar = ({ onSignInClick }: PropType) => {
 
     const menuItems: NavBarItems = [
         {
+            id: "1",
             name: "Home",
             redirectUrl: "/",
             type: "home"
         },
         {
+            id: "2",
             name: "Movies",
             redirectUrl: "/movies",
             type: "movies"
         },
         {
+            id: "3",
             name: "Movies List",
             redirectUrl: "/list",
             type: "list"
@@ -66,7 +68,7 @@ const NavBar = ({ onSignInClick }: PropType) => {
             {
                 menuItems.map((item) => {
                     return (
-                        <div className={styles["navbar-item-container"]} onClick={() => setSelectedItem(item.type)}>
+                        <div key={item?.id} className={styles["navbar-item-container"]} onClick={() => setSelectedItem(item.type)}>
                             <div onClick={() => navigate(item.redirectUrl)} className={`${styles["navbar-item"]} ${item.type === selectedItem && styles["selected"]}`}>
                                 <p>{item.name}</p>
                             </div>

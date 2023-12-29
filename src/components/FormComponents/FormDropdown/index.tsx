@@ -1,10 +1,9 @@
 import styles from "./style.module.css";
-import { useState } from 'react';
 import { FieldError } from "react-hook-form";
 
 type PropType = {
     options: Array<string>,
-    onSelectOption: Function,
+    onSelectOption?: Function,
     register: Function,
     registerName: string,
     errMessage?: string,
@@ -26,12 +25,10 @@ const FormDropdown = ({
     label,
     labelStyle,
     required = false }: PropType) => {
-    const [selectedOption, setSelectedOption] = useState(options[0] || "");
 
     const handleOptionChange = (event: any) => {
         const selectedValue = event?.target?.value;
-        setSelectedOption(selectedValue);
-        onSelectOption(selectedValue);
+        onSelectOption && onSelectOption(selectedValue);
     };
 
     return (
@@ -42,7 +39,7 @@ const FormDropdown = ({
                 </span>
             )}
             <div className={styles["form-select-container"]}>
-                <select {...register(registerName, { pattern: validation, required })} value={selectedOption} onChange={handleOptionChange}>
+                <select {...register(registerName, { pattern: validation, required })} onChange={handleOptionChange}>
                     {options.map((option: any) => (
                         <option key={option} value={option}>
                             {option}

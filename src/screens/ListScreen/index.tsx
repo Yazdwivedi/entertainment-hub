@@ -28,11 +28,11 @@ type Menu = Array<MenuItem>;
 
 type ListItem = {
   id: string;
-  imageUrl: string;
   title: string;
-  description: string;
-  status: string;
-  rating: string;
+  status?: string;
+  rating?: string;
+  imageUrl?: string;
+  description?: string;
 };
 
 type ListItems = Array<ListItem>;
@@ -81,10 +81,6 @@ const ListScreen = (): JSX.Element => {
     },
   ];
 
-  const [selectedType, setSelectedtype] = useState("all");
-  const [openModal, setOpenModal] = useState(false);
-  const [items, setItems] = useState(itemsArr);
-
   const menuItems: Menu = [
     {
       name: "All",
@@ -105,6 +101,12 @@ const ListScreen = (): JSX.Element => {
   ];
 
   const options = [Filters.Plan_to_watch,  Filters.Completed, Filters.Dropped];
+
+  const ratingsArray = ["0", "1", "2", "3", "4", "5"];
+
+  const [selectedType, setSelectedtype] = useState("all");
+  const [openModal, setOpenModal] = useState(false);
+  const [items, setItems] = useState(itemsArr);
 
   const handleOptionSelect = (
     idToUpdate: string,
@@ -191,7 +193,7 @@ const ListScreen = (): JSX.Element => {
                 <div className={styles["dropdown-container"]}>
                   <span>Rating</span>
                   <Dropdown
-                    options={["0", "1", "2", "3", "4", "5"]}
+                    options={ratingsArray}
                     onSelectOption={(newSelectValue: string) =>
                       handleOptionSelect(item.id, newSelectValue, "rating")
                     }
@@ -214,6 +216,16 @@ const ListScreen = (): JSX.Element => {
   const onNewMovieSubmit = (data: MovieInputs) => {
     setOpenModal(false);
     reset();
+    setItems(prevItems => {
+      const newItems = [...prevItems];
+      newItems.push({
+        id: Math.floor(Math.random() * (10)) + 5 + "",
+        title: data.movieName,
+        ...(data.movieRating ? {rating: data.movieRating} : {}),
+        ...(data.movieStatus ? {rating: data.movieStatus} : {}),
+      });
+      return newItems
+    });
   };
 
   const renderMovieForm = (): JSX.Element => {
@@ -237,15 +249,13 @@ const ListScreen = (): JSX.Element => {
           <br />
           <FormDropdown
             options={options}
-            onSelectOption={handleOptionSelect}
             register={register}
             registerName={"movieStatus"}
             label={"Movie Status"}
           />
           <br />
           <FormDropdown
-            options={options}
-            onSelectOption={handleOptionSelect}
+            options={ratingsArray}
             register={register}
             registerName={"movieRating"}
             label={"Movie Rating"}
