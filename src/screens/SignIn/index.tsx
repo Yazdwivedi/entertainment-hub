@@ -1,24 +1,27 @@
 import styles from "./style.module.css";
 import { useForm } from "react-hook-form";
 import FormInput from "../../components/FormComponents/FormInput";
+import { useSignInUserMutation } from "./slice";
 
 type PropType = {
     type: string,
     closeModal: Function
 }
 
-type UserInputs = {
+export type UserInputs = {
     email: string,
-    password: string
+    password: string,
+    username: string
 };
 
 const SignIn = ({ type, closeModal }: PropType): JSX.Element => {
     const { register, handleSubmit, reset, formState: { errors, isValid } } = useForm<UserInputs>({ mode: "onTouched" });
+    const [signInUser] = useSignInUserMutation();
 
-    const onNewMovieSubmit = (data: UserInputs) => {
-        console.log(data);
+    const signInSubmit = (data: UserInputs) => {
         closeModal();
         reset();
+        signInUser(data).unwrap().then(res=>console.log(res)).catch(err=>console.log(err))
     }
 
     const getHeading = (text: string) => {
@@ -31,7 +34,19 @@ const SignIn = ({ type, closeModal }: PropType): JSX.Element => {
     return (
         <div className={styles["sign-in-container"]}>
             <span>{getHeading(type)}</span>
-            <form className={styles["user-sign-in-form"]} onSubmit={handleSubmit(onNewMovieSubmit)}>
+            <form className={styles["user-sign-in-form"]} onSubmit={handleSubmit(signInSubmit)}>
+                <FormInput
+                    style={{ padding: "15px", width: "95%", alignSelf: "center" }}
+                    placeholder={"Enter Username"}
+                    register={register}
+                    registerName={"username"}
+                    label="Username"
+                    error={errors["username"]}
+                    required={true}
+                    errMessage={"Please enter a Username"}
+                    type="text"
+                />
+                <br />
                 <FormInput
                     style={{ padding: "15px", width: "95%", alignSelf: "center" }}
                     placeholder={"Enter Email"}
